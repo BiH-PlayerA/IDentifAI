@@ -1,0 +1,18 @@
+# Trainingsdaten & Bilder
+train-data/
+images/
+poster-logo/
+trained_faces.pkl
+
+# Datenbank-Dateien
+*.db
+*.sqlite
+*.sql
+
+# Python Cache & Umgebung
+__pycache__/
+*.pyc
+.env
+
+# Optional: Präsentationsdateien
+index.html

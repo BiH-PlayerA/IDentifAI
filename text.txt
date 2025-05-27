@@ -1,0 +1,65 @@
+import os
+import cv2
+import face_recognition
+import pickle
+import psycopg2
+import numpy as np
+
+# 🔌 Verbindung zur PostgreSQL-Datenbank
+conn = psycopg2.connect(
+    dbname="face_recognition_db",  # <-- ggf. anpassen
+    user="postgres",               # <-- ggf. anpassen
+    password="postgres",      # <-- anpassen
+    host="localhost",
+    port="5432"
+)
+cursor = conn.cursor()
+
+# Ordner mit Trainingsbildern
+TRAIN_DIR = "train-data"
+encodings = []
+names = []
+
+for person in os.listdir(TRAIN_DIR):
+    person_path = os.path.join(TRAIN_DIR, person)
+
+    if not os.path.isdir(person_path):
+        continue
+
+    for image_name in os.listdir(person_path):
+        image_path = os.path.join(person_path, image_name)
+        image = cv2.imread(image_path)
+
+        if image is None:
+            print(f"⚠️ Konnte Bild nicht laden: {image_name}")
+            continue
+
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        encodings_in_image = face_recognition.face_encodings(image, model="cnn")
+
+        if encodings_in_image:
+            encoding = encodings_in_image[0]
+            encodings.append(encoding)
+            names.append(person)
+
+            # ➕ Encoding als Byte speichern
+            encoding_blob = encoding.tobytes()
+
+            # ⬇ Update in der Datenbank
+            cursor.execute(
+                "UPDATE students SET face_encoding = %s WHERE name = %s",
+                (encoding_blob, person)
+            )
+            print(f"✅ Encoding gespeichert für: {person}")
+            break  # Nur ein Bild pro Person nehmen
+        else:
+            print(f"⚠️ Gesicht nicht erkannt: {image_name}")
+
+# Lokale .pkl Datei weiterhin speichern (falls du sie im Test nutzt)
+with open("trained_faces.pkl", "wb") as f:
+    pickle.dump((encodings, names), f)
+
+conn.commit()
+cursor.close()
+conn.close()
+print("✅ Training abgeschlossen & Datenbank aktualisiert!")

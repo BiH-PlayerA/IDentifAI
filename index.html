@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>IDentifAI</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    h1 { color: #333; }
+    button, input { margin-top: 1rem; padding: 0.5rem 1rem; }
+  </style>
+</head>
+<body>
+  <h1>IDentifAI 🧠</h1>
+
+  <button onclick="train()">Gesichter trainieren</button>
+  <p id="trainResult"></p>
+
+  <hr>
+
+  <input type="file" id="imageInput">
+  <button onclick="recognize()">Bild erkennen</button>
+  <p id="recognizeResult"></p>
+
+  <script>
+    function train() {
+      fetch('http://localhost:5000/train', { method: 'POST' })
+        .then(res => {
+          return res.json().then(data => {
+            if (!res.ok) {
+              document.getElementById("trainResult").innerText = "❌ Fehler beim Training: " + (data.error || "Unbekannter Fehler");
+              console.error("Fehlerdetails:", data);
+            } else {
+              document.getElementById("trainResult").innerText = "✅ Gesichter trainiert: " + data.faces;
+              console.log("Train erfolgreich:", data);
+            }
+          });
+        })
+        .catch(err => {
+          document.getElementById("trainResult").innerText = "❌ Fehler beim Training (Netzwerk)";
+          console.error("Trainingsfehler:", err);
+        });
+    }
+
+    function recognize() {
+      const file = document.getElementById("imageInput").files[0];
+      if (!file) return alert("Bitte ein Bild auswählen!");
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      fetch('http://localhost:5000/recognize', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => {
+          return res.json().then(data => {
+            if (!res.ok) {
+              document.getElementById("recognizeResult").innerText = "❌ Fehler bei der Erkennung: " + (data.error || "Unbekannter Fehler");
+              console.error("Fehlerdetails:", data);
+            } else {
+              document.getElementById("recognizeResult").innerText = "👤 Erkannte Namen: " + data.names.join(", ");
+              console.log("Erkennung erfolgreich:", data);
+            }
+          });
+        })
+        .catch(err => {
+          document.getElementById("recognizeResult").innerText = "❌ Fehler bei der Erkennung (Netzwerk)";
+          console.error("Erkennungsfehler:", err);
+        });
+    }
+  </script>
+
+</body>
+</html>

@@ -25,12 +25,14 @@ git clone https://github.com/DEIN-NAME/identifai.git
 cd identifai
 pip install -r requirements.txt
 python app.py
-
-## Bilder hochladen
-train-data/
-├── Name(Max Mustermann)/
-│   └── bild1.jpg
-├── Name(Maxi Mustmann)/
-│   └── bild1.png
-
 ```
+So muss dein Ordner train-data/ aufgebaut sein:
+
+kotlin
+Kopieren
+Bearbeiten
+train-data/
+├── Max Mustermann/
+│   └── bild1.jpg
+├── Maxi Mustmann/
+│   └── bild1.png

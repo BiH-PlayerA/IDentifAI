@@ -1,18 +1,7 @@
-# Trainingsdaten & Bilder
+# Ignoriere diese Ordner und Dateien
+poster-logo/
 train-data/
 images/
-poster-logo/
-trained_faces.pkl
-
-# Datenbank-Dateien
-*.db
-*.sqlite
+*.pkl
 *.sql
-
-# Python Cache & Umgebung
-__pycache__/
-*.pyc
-.env
-
-# Optional: Präsentationsdateien
 index.html

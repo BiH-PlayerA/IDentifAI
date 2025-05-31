@@ -21,18 +21,16 @@ Ein Schulprojekt zur automatischen Gesichtserkennung mit KI (Python + Flask + fa
 ### 🔥 Setup lokal
 
 ```bash
-git clone https://github.com/DEIN-NAME/identifai.git
-cd identifai
+git clone https://github.com/BiH-PlayerA/IDentifAI.git
+cd IDentifAI
 pip install -r requirements.txt
 python app.py
 ```
-So muss dein Ordner train-data/ aufgebaut sein:
 
-kotlin
-Kopieren
-Bearbeiten
+### 📁 Ordnerstruktur für Trainingsdaten
+
 train-data/
 ├── Max Mustermann/
-│   └── bild1.jpg
+│ └── bild1.jpg
 ├── Maxi Mustmann/
-│   └── bild1.png
+│ └── bild1.png
